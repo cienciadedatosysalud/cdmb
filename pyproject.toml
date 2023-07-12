@@ -22,7 +22,7 @@ readme = "README.md"
 packages = [{include = "cdmb"}]
 
 classifiers = [
-    "Topic ;; Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries :: Python Modules",
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Healthcare Industry",
     "Intended Audience :: Science/Research",
