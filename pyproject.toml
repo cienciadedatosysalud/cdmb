@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "cdmb"
+version = "0.1.0"
+description = "Common Data Model Builder library"
+authors = [
+    "Javier González-Galindo <jgonzalezga.iacs@aragon.es>",
+    "Francisco Estupiñan-Romero <festupinnan.iacs@aragon.es>",
+    "Santiago Royo-Sierra <sroyo.iacs@aragon.es>"
+]
+
+maintainers = [
+    "Javier González-Galindo <jgonzalezga.iacs@aragon.es>",
+    "Francisco Estupiñan-Romero <festupinnan.iacs@aragon.es>",
+    "Santiago Royo-Sierra <sroyo.iacs@aragon.es>"
+]
+
+license = "CC-BY-NC-4.0"
+repository = "https://github.com/cienciadedatosysalud/cdmb"
+keywords = ["common data model", "real-world data", "health data", "synthetic data", "secondary use", "health", "healthcare"]
+
+readme = "README.md"
+packages = [{include = "cdmb"}]
+
+classifiers = [
+    "Topic ;; Software Development :: Libraries :: Python Modules",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: Implementation",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",  "Topic :: Scientific/Engineering :: Human Machine Interfaces"
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pytest = "^7.4.0"
+pandas = "^2.0.3"
+faker = "^18.11.2"
+duckdb = "^0.8.1"
+graphviz = "^0.20.1"
+fastapi = "^0.99.1"
+rocrate = "^0.8.0"
+openpyxl = "^3.1.2"
+uvicorn = "^0.22.0"
+python-multipart = "^0.0.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

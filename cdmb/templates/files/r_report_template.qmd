@@ -1,0 +1,106 @@
+---
+title: "Report template"
+author: "CDM BUILDER"
+format: 
+  html:
+    self-contained: true
+    grid:
+      body-width: 1250px
+      margin-width: 400px
+      gutter-width: 1.5rem
+code-fold: false
+echo: false
+message: false
+warning: false
+error: false
+always_allow_html: yes
+params:
+    path_json: '../../docs/CDM/cdmb_config.json' 
+    path_database: '../../inputs/data.duckdb'  
+    
+---
+
+
+```{r}
+# All entities declared in the Common Data Model are persisted in the database 
+# which is located, according to the defined folder structure, in '../../inputs/data.duckdb'.
+# 
+# The name of each of the tables is exactly the same as the name set at the time of defining each entity. 
+# And the name of the columns of the table corresponds to the label of each one 
+# of the variables for the specific entity.
+# 
+# You can access the data in the database by using SQL query or R API 
+# (https://duckdb.org/docs/api/r).
+# 
+# When implementing your scripts please take into account the relative paths to 
+# the inputs and outputs to maintain the folder structure.
+# 
+# You can develop Quarto documents in other languages such as Python. 
+# - https://quarto.org/docs/computations/python.html
+# - https://duckdb.org/docs/api/python/overview
+# 
+# Or simply develop .R or .py scripts. 
+
+```
+
+
+
+```{r}
+#| label: load json
+
+library(jsonlite)
+
+file_json <- jsonlite::fromJSON(params$path_json)
+
+entity_name <- file_json$entities$name
+
+```
+
+
+```{r,results='asis',message=FALSE}
+#| label: connect to database
+library(duckdb)
+library(Hmisc)
+library(kableExtra)
+library(logger)
+
+cat("::: {.panel-tabset} \n")
+for (i in 1:length(entity_name)){
+  
+  cat("\n")
+  cat("##", entity_name[i], "\n")
+  cat("### Entity:", entity_name[i], "\n")
+
+tryCatch(
+  {
+    con = dbConnect(duckdb::duckdb(), dbdir=params$path_database, read_only=FALSE)
+    logger::log_info("Connect to database")
+    df <- dbGetQuery(con, paste0(
+    "SELECT * FROM ",entity_name[i]," LIMIT 10"))
+  cat(as.data.frame(df) %>%
+  kbl(., "html", escape = FALSE) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = FALSE) %>% scroll_box(width = "100%"))
+  },
+  error=function(cond){
+   logger::log_error("Here's error message:")
+    logger::log_error(cond)
+    # Choose a return value in case of error
+    return(NA)
+        },
+  warning=function(cond){
+    logger::log_warn("Here's warning message:")
+    logger::log_warn(cond)
+    # Choose a return value in case of warning
+    return(NULL)
+  },
+  finally={
+    dbDisconnect(con, shutdown=TRUE)
+    logger::log_info("Disconnect to database")
+  })
+ cat("\n \n")
+}
+  cat(":::")
+
+```
+
+
+This template has been created by the research group: Data Science for Health Services and Policy Research. You can find us on Github by clicking on the following link: [Ciencia de datos y salud](https://github.com/cienciadedatosysalud).

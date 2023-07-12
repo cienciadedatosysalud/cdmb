@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<script>
+	
+</script>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="./favicon.png" />
+	<meta name="viewport" content="width=device-width" />
+	<meta http-equiv="content-security-policy" content="">
+		<link href="./_app/immutable/assets/0.83e0eb50.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/Indicator.1d121e74.css" rel="stylesheet"><title>Validation</title><!-- HEAD_svelte-1cf0xe4_START --><meta name="description" content="About this app"><!-- HEAD_svelte-1cf0xe4_END -->
+</head>
+
+<body  data-sveltekit-preload-data="hover">
+	<div style="display: contents">
+
+
+<div class="app svelte-nv0ll5">
+
+<header class="svelte-1xklbfh"><div class="corner svelte-1xklbfh"><a href="https://cienciadedatosysalud.org/" target="_blank" class="svelte-1xklbfh"><img style="width: 100%; margin-left: 15px;" src="/_app/immutable/assets/favicon.157dca14.png" alt="LogoAtlasVPM" class="svelte-1xklbfh"></a></div>
+
+	<nav class="svelte-1xklbfh"><svg viewBox="0 0 2 3" aria-hidden="true" class="svelte-1xklbfh"><path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" class="svelte-1xklbfh"></path></svg>
+
+		<ul class="svelte-1xklbfh"><li class="svelte-1xklbfh"><a href="/" class="svelte-1xklbfh">Home</a></li>
+			<hr class="dashed" style="height:30%;">
+			<li class="svelte-1xklbfh"><a href="/project" class="svelte-1xklbfh">Project</a></li>
+			<li class="svelte-1xklbfh"><a href="/cohort" class="svelte-1xklbfh">Cohort definition</a></li>
+			<li class="svelte-1xklbfh"><a href="/entities" class="svelte-1xklbfh">Entities definition</a></li>
+			<li aria-current="page" class="svelte-1xklbfh"><a href="/validation" class="svelte-1xklbfh">Validation</a></li>
+			<li class="svelte-1xklbfh"><a href="/summary" class="svelte-1xklbfh">Summary</a></li>
+			<hr class="dashed" style="height:30%;">
+			<li class="svelte-1xklbfh"><a href="/about" class="svelte-1xklbfh">About</a></li></ul>
+		<svg viewBox="0 0 2 3" aria-hidden="true" class="svelte-1xklbfh"><path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" class="svelte-1xklbfh"></path></svg></nav>
+
+	<div class="corner svelte-1xklbfh"><a href="https://github.com/cienciadedatosysalud" target="_blank" class="svelte-1xklbfh"><img src="/_app/immutable/assets/github.1ea8d62e.svg" alt="GitHub" class="svelte-1xklbfh"></a></div></header>
+
+
+
+
+  <main class="svelte-nv0ll5">
+<div class="fixed right-6 bottom-6 group"><button type="button" name="Open actions menu" aria-controls="ljpt12uj" aria-expanded="false" class="text-center font-medium focus:ring-4 focus:outline-none inline-flex items-center justify-center px-5 py-2.5 text-sm text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300 dark:focus:ring-yellow-900 rounded-full !p-3">
+      <svg aria-hidden="true" class="w-8 h-8 transition-transform group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+    
+    <span class="sr-only">Open actions menu</span></button>
+  <div></div>
+
+</div>
+<h1>Validation files</h1>
+
+
+
+
+<div class="svelteui-c-iGtvjx svelteui-c-iGtvjx-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p>This section is intended to declare validation rules that will follow the
+	entities declared in the previous section.
+</p>
+<p>The format of the rules follows the operation syntax of the high performance
+	analytical database system DuckDB (For more information, visit <a target="_blank" href="https://duckdb.org/docs/" class="text-blue-600 dark:text-blue-500 hover:underline">DuckDB</a>).
+</p>
+
+<p>The tool does not validate the rules uploaded by the user. In case it cannot
+	identify the type of rule entered it is assigned to a general rule type for
+	further debugging by the user.
+</p>
+
+<p>Example of rules:</p>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p>- Check null values (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/comparison_operators" class="text-blue-600 dark:text-blue-500 hover:underline">Comparisons</a>).
+</p>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<kbd class="text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 px-2 py-1.5">age IS NULL</kbd>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p>- Value of the variable within an interval. (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/comparison_operators" class="text-blue-600 dark:text-blue-500 hover:underline">Comparisons</a>).
+</p>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<kbd class="text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 px-2 py-1.5">age BETWEEN 18 AND 115</kbd>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p>- Comparison between variables. (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/comparison_operators" class="text-blue-600 dark:text-blue-500 hover:underline">Comparisons</a>).
+</p>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<kbd class="text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 px-2 py-1.5">discharge_dt &gt;= admission_dt</kbd>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p>- Values of a variable contained in a table of values (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/in" class="text-blue-600 dark:text-blue-500 hover:underline">IN Operator</a>).
+</p>
+<kbd class="text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 px-2 py-1.5">country_cd IN (&#39;ES&#39;, &#39;BE&#39;, &#39;DE&#39;, NULL)</kbd>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p>- Complex rules (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/overview" class="text-blue-600 dark:text-blue-500 hover:underline">Expressions</a>)
+</p>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<kbd class="text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 px-2 py-1.5">((sex_cd = &#39;2&#39;) AND (age BETWEEN 16 AND 65))</kbd>
+
+
+
+<div class="svelteui-c-ljgopy svelteui-c-ljgopy-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p>It is <strong>recommended to download the template</strong> of the entity that
+	needs validation rules, look at the examples and modify them to fit the purpose.
+</p>
+<p>Once the rules are declared, upload the file in the corresponding entity.</p>
+<p>This step is <strong>not mandatory</strong> and will only affect the synthetic
+	data generation at this point. You can modify the validation rules file in the
+	following path of the generated structure:
+</p>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p><strong>use_case/docs/CDM/entities/entityX/validation-rules/your_validation_file.json</strong></p>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p>And in the configuration file located at:</p>
+
+
+
+<div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<p><strong>use_case/docs/CDM/cdmb_config.json</strong></p>
+
+
+
+
+
+
+<div class="svelteui-Divider-horizontal shows-label svelteui-c-FOjNc svelteui-c-FOjNc-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css">
+
+
+
+
+
+<div class="svelteui-c-cyPUJs svelteui-Divider-label center svelteui-c-jzLbEy svelteui-c-jzLbEy-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css" href="">
+				Validation files
+			</div></div>
+
+
+
+<div class="svelteui-c-iGtvjx svelteui-c-iGtvjx-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+<h2 class="text-2xl font-extrabold  text-gray-900 dark:text-white w-full">Upload your validation files</h2>
+
+
+
+<div class="svelteui-c-iGtvjx svelteui-c-iGtvjx-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+
+
+
+<div class="svelteui-c-hGiiQV svelteui-c-hGiiQV-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+
+
+
+<div class="svelteui-c-iGtvjx svelteui-c-iGtvjx-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
+
+</main>
+
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+---
+title: "Validation report"
+format: 
+  html:
+    self-contained: true
+    grid:
+      body-width: 950px
+      margin-width: 300px
+      gutter-width: 1.5rem
+code-fold: false
+echo: false
+message: false
+warning: false
+error: false
+always_allow_html: yes
+
+params:
+    output_path: "../../outputs/validator_output.json"
+
+---
+
+
+
+```{r}
+library(jsonlite)
+library(purrr)
+library(kableExtra)
+library(dplyr)
+
+
+data <- jsonlite::fromJSON(params$output_path)
+data <- as.data.frame(data$info)
+
+entities_name =  data$entity
+entities_total_registries =  data$total_registries
+
+na_count_df <- data$na_count_list %>%
+  map(`[`) %>%
+  map(function(.) {
+    as.data.frame(.)
+    })
+
+catalog_checking_df <- data$catalog_checking %>%
+  map(`[`) %>%
+  map(function(.) {
+    as.data.frame(.)
+    })
+
+rules_df <- data$rules %>%
+  map(`[`) %>%
+  map(function(.) {
+    as.data.frame(.)
+    })
+
+
+```
+
+
+<h3> This report provides information on the validation processes of each of the entities that make up the project. </h3> 
+<h3> Each of the tabs contains information on one entity which is summarized in three processes: </h3>
+<ul>
+  <li><strong>Null value counting</strong>:  Finds for each variable that makes up the entity, how many null values it presents.</li>
+  <li><strong>Validation against catalogs</strong>: Discovery of values that do not comply with the provided catalogs that are part of the definition of a variable.</li>
+  <li><strong>Validation of rules</strong>: Discovery of records that do not comply with the rules established at the entity level.</li>
+</ul>
+<br>
+<h3> Entities </h3>
+
+
+
+```{r,results='asis',message=FALSE,warning=FALSE, error=FALSE}
+
+cat("::: {.panel-tabset} \n")
+for (i in range(1,length(entities_name))) {
+  
+  cat("\n")
+  cat("##", entities_name[i], "\n")
+  cat("### Entity:", entities_name[i], "\n")
+  cat("### Total registries:", entities_total_registries[i], "\n")
+  
+  cat("### Null value counting \n")
+
+  df1 <- as.data.frame(na_count_df[i])
+  df1$na_count <- cell_spec(df1$na_count, background = ifelse(df1$na_count > 0, "orange", ""))
+  cat(df1 %>% 
+  kbl(., "html", escape = F, col.names = c("Variable label", "Count of null values")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
+  
+  cat("\n <hr/>")
+  cat("### Validation against catalogs \n")
+  df2 <- as.data.frame(catalog_checking_df[i])
+  df2$total_wrong_lines <- cell_spec(df2$total_wrong_lines, background = ifelse(df2$total_wrong_lines > (0.2*entities_total_registries[i]), "orange", ""))
+  
+  cat(df2 %>%
+  kbl(., "html", escape = F, col.names = c("Variable label", "Wrong values","No. wrong registries","Line number")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
+  
+  
+  cat("\n <hr/>")
+  cat("### Validation of rules\n")
+  df3 <- as.data.frame(rules_df[i])
+
+  df3$total_wrong_lines <- cell_spec(df3$total_wrong_lines, background = ifelse(df3$total_wrong_lines > (0.2*entities_total_registries[i]), "orange", ""))
+   cat(df3 %>%
+  kbl(., "html", escape = F, col.names = c("Rule", "Passes","Fails","Line number")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
+  cat("\n \n")
+
+}
+  cat(":::")
+
+```
+
+
+
