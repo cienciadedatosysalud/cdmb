@@ -41,7 +41,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-poetry-
     - name: Build and push
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v2
       with:
         push: true
         tags: ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
