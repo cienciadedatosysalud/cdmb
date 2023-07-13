@@ -19,10 +19,6 @@ jobs:
         packages: write
         id-token: write # needed for signing the images with GitHub OIDC Token
     steps:
-    - name: Install Cosign
-      uses: sigstore/cosign-installer@v3.1.1
-    - name: Check install!
-      run: cosign version
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx
@@ -45,7 +41,4 @@ jobs:
       with:
         push: true
         tags: ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
-        path: ./docker/Dockerfile
-        run: |
-          cosign sign ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          cosign verify ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        file: ./docker/Dockerfile
