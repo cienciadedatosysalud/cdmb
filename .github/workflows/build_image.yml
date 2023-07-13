@@ -45,7 +45,6 @@ jobs:
       with:
         push: true
         tags: ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
-        context: https://github.com/cienciadedatosysalud/cdmb.git
         file: |
           FROM python:3.9.17-slim
           RUN apt update && apt install -y --no-install-recommends \
