@@ -45,8 +45,7 @@ jobs:
       with:
         push: true
         tags: ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
-        context: .
-        file: docker/Dockerfile
+        path: ./docker/Dockerfile
         run: |
           cosign sign ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
           cosign verify ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
