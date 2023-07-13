@@ -1,4 +1,4 @@
-![Logo of the project](https://cienciadedatosysalud.org/wp-content/uploads/Data-Science-and-VPM.png)
+![Logo of the project](https://cienciadedatosysalud.org/wp-content/uploads/logo-Data-Science-VPM.png)
 - [Common Data Model Builder (cdmb)](#common-data-model-builder-cdmb)
 - [User Interface](#user-interface)
 - [Outputs](#outputs)
