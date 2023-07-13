@@ -41,11 +41,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-poetry-
     - name: Build and push
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v4
       with:
         push: true
         tags: ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
-        context: ./docker
+        context: "{{defaultContext}}:docker"
         run: |
           cosign sign ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
           cosign verify ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
