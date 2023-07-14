@@ -96,7 +96,7 @@ if __name__ == '__main__':
             if 'catalog_bl' in variable and variable['catalog_bl'] is True and str(variable['format']).lower() != "boolean":
                 logging.info(
                     f"Checking variables that are defined based on a catalog.")
-                if 'column_name' not in variable['catalog'] or 'filename' not in variable['catalog']:
+                if variable['catalog'] is None or 'column_name' not in variable['catalog'] or 'filename' not in variable['catalog']:
                     logging.error(
                         f"\"catalog\" for your variable \"{entity_name}\" is not well defined in your configuration file! Check the specifications!")
                     exit(1)

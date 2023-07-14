@@ -607,6 +607,11 @@ class CommonDataModel:
         crate = ROCrate()
         authors = []
         orcid_prefix = "https://orcid.org/"
+        crate.name = str(self.metadata.project or '')
+        crate.description = str(self.metadata.description or '')
+        crate.keywords = ', '.join(self.metadata.keywords)
+        crate.license = str(self.metadata.license or '')
+        crate.creator = "Common Data Model Builder"
         for author in self.metadata.authors:
             orcid_id_ = author.id
             name_ = author.name
@@ -941,36 +946,36 @@ class CommonDataModel:
             relationships_list: list[Relationship] = []
             for relationship in configuration['relationships']:
                 if 'left_entity' not in relationship:
-                    raise ValueError()
+                    raise ValueError("'left_entity' is not declared in the relationship")
                 if 'right_entity' not in relationship:
-                    raise ValueError()
+                    raise ValueError("'right_entity' is not declared in the relationship")
                 if 'join_type' not in relationship:
-                    raise ValueError()
+                    raise ValueError("'join_type' is not declared in the relationship")
                 if 'left_column' not in relationship:
-                    raise ValueError()
+                    raise ValueError("'left_column' is not declared in the relationship")
                 if 'right_column' not in relationship:
-                    raise ValueError()
+                    raise ValueError("'right_column' is not declared in the relationship")
                 left_entity_str = relationship["left_entity"]
                 if left_entity_str not in entities_catalog:
-                    raise ValueError()
+                    raise ValueError("The left entity of the relationship does not match any of the declared entities.")
                 left_entity = entities_catalog[left_entity_str]
 
                 right_entity_str = relationship["right_entity"]
                 if right_entity_str not in entities_catalog:
-                    raise ValueError()
+                    raise ValueError("The right entity of the relationship does not match any of the declared entities.")
                 right_entity = entities_catalog[right_entity_str]
 
                 join_type = relationship["join_type"]
                 if join_type not in JoinOptions.__args__:
-                    raise ValueError()
+                    raise ValueError('join_type must be in {literal_values}'.format(literal_values=JoinOptions.__args__))
 
                 left_column = left_entity.get_variable_by_label(relationship["left_column"])
                 if left_column is None:
-                    raise ValueError()
+                    raise ValueError('"left_column" variable has to be part of its entity ("left_entity")')
 
                 right_column = right_entity.get_variable_by_label(relationship["right_column"])
                 if right_column is None:
-                    raise ValueError()
+                    raise ValueError('"right_column" variable has to be part of its entity ("right_entity")')
 
                 relationships_list.append(Relationship(left_entity, right_entity, left_column, right_column, join_type))
         else:
