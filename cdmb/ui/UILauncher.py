@@ -248,7 +248,7 @@ def create_project_with_files(configuration: Annotated[str, Form(media_type="mul
         cdm = CommonDataModel(metadata_, cohort_, entities_, relationships_)
         with tempfile.TemporaryDirectory(dir='.') as output_dir:
             cdm.save_project(output_dir)
-            file_list = glob.glob(output_dir + "/**", recursive=True)
+            file_list = glob.glob(output_dir + "/**", recursive=True) + glob.glob(output_dir + "/**/.git*", recursive=True)
             return zipfiles(file_list, output_dir)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

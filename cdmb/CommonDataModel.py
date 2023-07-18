@@ -33,7 +33,29 @@ from .project.Author import Author
 from .project.Metadata import Metadata
 from .relationships.Relationship import Relationship
 from .templates import Utils
+from dateutil.parser import parse
 
+def is_float(param: str):
+    try:
+        float(param)
+        return True
+    except ValueError:
+        return False
+
+
+def is_int(param: str):
+    try:
+        int(param)
+        return True
+    except ValueError:
+        return False
+
+def is_date(string, fuzzy=False):
+    try:
+        parse(string, fuzzy=fuzzy)
+        return True
+    except ValueError:
+        return False
 
 class CommonDataModel:
     def __init__(self,
@@ -187,7 +209,7 @@ class CommonDataModel:
             self.save_project(str(tmpdirname))
             time.sleep(1)
             uuid_zip = str(uuid.uuid4())
-            shutil.make_archive(os.path.join(out_dir, uuid_zip), 'zip', root_dir=str(tmpdirname),
+            shutil.make_archive(os.path.join(out_dir, self.folder_code), 'zip', root_dir=str(tmpdirname),
                                 base_dir=self.folder_code)
             time.sleep(1)
             return uuid_zip
@@ -418,7 +440,6 @@ class CommonDataModel:
                 break
         return response
 
-
     def __generate_synthetic(self, num_registries: int = 1000):
         database_ = os.path.join(self.__getInputPath(), 'data.duckdb')
         con = duckdb.connect(database=database_, read_only=False)
@@ -467,6 +488,14 @@ class CommonDataModel:
                             data_[label] = choices(rule["values"],
                                                    k=num_registries)
                         else:
+                            # String Categorical variable that takes numerical/date variables.
+                            if format_ == "String" and (is_int(rule['min_value']) or is_int(rule['max_value'])):
+                                format_ = "Integer"
+                            elif format_ == "String" and (is_float(rule['min_value']) or is_float(rule['max_value'])):
+                                format_ = "Double"
+                            elif format_ == "String" and (is_date(rule['min_value']) or is_date(rule['max_value'])):
+                                format_ = "Datetime"
+
                             if 'interval_comparison' in rule['category'] and rule['negative'] is True:
                                 # not between X and Y
                                 left_side_registries = int(num_registries / 2)
@@ -598,8 +627,6 @@ class CommonDataModel:
                 raise ValueError("The entity name cannot be an empty string.")
 
             df.to_csv(path_, index=False)
-            # TODO Establecer el tipo de datos de la tabla
-
 
             con.sql("CREATE TABLE " + entity.name + " AS SELECT * FROM df")
 

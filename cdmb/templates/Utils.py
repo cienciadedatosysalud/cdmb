@@ -11,12 +11,13 @@ def generate_documentation(out_dir):
 
 
 def copyFileDoc(out_dir: str):
-    docs = ["man_container_deployment.md", "README.md", "LICENSE.md",".gitignore"]
+    docs = ["man_container_deployment.md", "README.md", "LICENSE.md"]
     for doc in docs:
         original = os.path.join(os.path.dirname(__file__), 'files', doc)
         target = os.path.join(out_dir, doc)
         shutil.copyfile(original, target)
-
+    original = os.path.join(os.path.dirname(__file__), 'files', ".gitignore")
+    shutil.copy(original, os.path.join(out_dir, ".gitignore"))
 
 def copyFileDqa(out_dir: str):
     filename = "dqa.py"
