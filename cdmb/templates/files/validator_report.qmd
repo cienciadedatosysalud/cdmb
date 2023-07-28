@@ -91,7 +91,7 @@ for (i in range(1,length(entities_name))) {
   df2$total_wrong_lines <- cell_spec(df2$total_wrong_lines, background = ifelse(df2$total_wrong_lines > (0.2*entities_total_registries[i]), "orange", ""))
   
   cat(df2 %>%
-  kbl(., "html", escape = F, col.names = c("Variable label", "Wrong values","No. wrong registries","Line number")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
+  kbl(., "html", escape = F, col.names = c("Variable label", "Wrong values","Fails (line number)","Number of lines")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
   
   
   cat("\n <hr/>")
@@ -100,7 +100,7 @@ for (i in range(1,length(entities_name))) {
 
   df3$total_wrong_lines <- cell_spec(df3$total_wrong_lines, background = ifelse(df3$total_wrong_lines > (0.2*entities_total_registries[i]), "orange", ""))
    cat(df3 %>%
-  kbl(., "html", escape = F, col.names = c("Rule", "Passes","Fails","Line number")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
+  kbl(., "html", escape = F, col.names = c("Rule", "Passes","Fails (line number)","Number of lines")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
   cat("\n \n")
 
 }

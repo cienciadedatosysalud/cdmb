@@ -88,6 +88,32 @@ def check_file(entity_structure):
     load_file(entity_structure, df)
 
 
+def create_entity_table_if_not_exists(entity_name_, entity_variables_, entity_formats_):
+    format_translation = {
+        "string": "VARCHAR",
+        "boolean": "BOOLEAN",
+        "date": "DATE",
+        "datetime": "TIMESTAMP",
+        "integer": "BIGINT",
+        "double": "DOUBLE"
+    }
+    query = f"""CREATE TABLE IF NOT EXISTS {entity_name_}({entity_variables_[0]} {format_translation.get(entity_formats_[0], "VARCHAR")}"""
+    for (variable_, format_) in zip(entity_variables_[1:], entity_formats_[1:]):
+        query += f""", {variable_} {format_translation.get(format_)}"""
+    query += ");"
+    try:
+        logging.info(f"Trying to connect to the database ...")
+        logging.info(f"Trying to create the table for entity \"{entity_name_}\"")
+        logging.info(f"Table structure:\n {query}")
+        con = duckdb.connect(database_path, read_only=False)
+        con.execute(query)
+        logging.info(f"Table successfully created!")
+    except Exception as e:
+        logging.error("Something went wrong in the creation of the table")
+        logging.error(str(e))
+    finally:
+        con.close()
+
 def create_entity_table(entity_name_, entity_variables_, entity_formats_):
     format_translation = {
         "string": "VARCHAR",
@@ -166,6 +192,7 @@ if __name__ == '__main__':
             try:
                 entity_variables = [variable['label'] for variable in entity['variables']]
                 entity_formats = [str(variable['format']).lower() for variable in entity['variables']]
+                create_entity_table_if_not_exists(entity_name,entity_variables,entity_formats)
             except Exception as e:
                 logging.error("Variables must have the properties \"label\" and \"format\"")
                 logging.error(str(e))

@@ -52,15 +52,16 @@ if __name__ == '__main__':
         query = "Select * from {entity}".format(entity=entity_name)
         df_entity = con.query(query).to_df()
         logging.info(f"\"{entity_name}\" entity contains {len(df_entity)} records")
-        profile = ProfileReport(df_entity, title=title, minimal=True)
-        html_out = os.path.join(output_path, "dqa_{usecase}_{entity_}.html".format(
-            usecase=use_case_name,
-            entity_=str(entity_name).replace(' ', '_')
-        ))
-        json_out = os.path.join(output_path, "dqa_{usecase}_{entity_}.json".format(
-            usecase=use_case_name,
-            entity_=str(entity_name).replace(' ', '_')
-        ))
-        profile.to_file(html_out)
-        profile.to_file(json_out)
+        if len(df_entity) > 0:
+            profile = ProfileReport(df_entity, title=title, minimal=True)
+            html_out = os.path.join(output_path, "dqa_{usecase}_{entity_}.html".format(
+                usecase=use_case_name,
+                entity_=str(entity_name).replace(' ', '_')
+            ))
+            json_out = os.path.join(output_path, "dqa_{usecase}_{entity_}.json".format(
+                usecase=use_case_name,
+                entity_=str(entity_name).replace(' ', '_')
+            ))
+            profile.to_file(html_out)
+            profile.to_file(json_out)
     con.close()

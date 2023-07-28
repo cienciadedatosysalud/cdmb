@@ -183,7 +183,6 @@ if __name__ == '__main__':
         result_entity['rules'] = result_rules
         response.append(result_entity)
         con.execute(f"DROP VIEW IF EXISTS {view_name};")
-
     try:
         with open(os.path.join(output_path, 'validator_output.json'), 'w') as f:
             json_object = json.dumps({'info':response}, indent=4)

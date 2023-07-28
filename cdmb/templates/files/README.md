@@ -1,6 +1,6 @@
 ![Logo of the project](https://cienciadedatosysalud.org/wp-content/uploads/logo-Data-Science-VPM.png)
 
-<small><i>This project follows the structure build using the [Common Data Model Builder](https://github.com/cienciadedatosysalud/cdmb), a tool that allows you to create common data models to facilitate interoperability and reproducibility of the analyses.</i></small>
+<small><i>This project follows the structure built using the [Common Data Model Builder](https://github.com/cienciadedatosysalud/cdmb), a tool that allows you to create common data models to facilitate interoperability and reproducibility of the analyses.</i></small>
 
 
 # Your project title
@@ -76,7 +76,7 @@ Version of Python used: **3.8**
 | Surname, name | Affiliation | ![orcid](https://orcid.org/sites/default/files/images/orcid_16x16.png) ORCID |
 |---------------|-------------|------------------------------------------------------------------------------|
 
-
+# Previous version(s):
 
 # How to contribute
 - Repository: https://github.com/your_user/your_repository/
@@ -86,9 +86,9 @@ Version of Python used: **3.8**
 - Data Science for Health Services and Policy Research group: https://cienciadedatosysalud.org/en/
 - Common Data Model Builder library :https://github.com/cienciadedatosysalud/cdmb
 - Analytic Software Pipeline Interface for Reproducible Execution (ASPIRE): https://github.com/cienciadedatosysalud/ASPIRE
-- ORCID: https://orcid.org/
-- Zenodo: https://zenodo.org/
+- Atlas VPM community in Zenodo: https://zenodo.org/communities/atlasvpm
 - Research Object Crate (RO-Crate): https://www.researchobject.org/ro-crate/
+- ORCID: https://orcid.org/
 
 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" ><img src="https://img.shields.io/badge/license-CC--BY%204.0-lightgrey" alt="License: CC-BY 4.0"></a>
 
