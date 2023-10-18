@@ -4,6 +4,33 @@ import os
 
 import duckdb  # duckdb-0.8.1
 import pandas as pd
+import chardet
+import re
+
+def infer_separator(file_, uploaded_file_):
+    firstline = file_.readline().rstrip()
+    logging.info(f"Header for the file '{uploaded_file_}':\n\n{firstline} \n")
+    separators = re.sub('"*[a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
+    if len(separators) > 0:
+        return separators[0], firstline
+    else:
+        # Return random separator, exception will be thrown on header reading
+        return '|'
+
+
+def infer_encoding(uploaded_file_):
+    logging.info(f"Trying to detect the encoding of the file '{uploaded_file_}'")
+    detector = chardet.UniversalDetector()
+    with open(uploaded_file_, "rb") as f:
+        for line in f.readlines():
+            detector.feed(line)
+            if detector.done: break
+        detector.close()
+    encoding = detector.result['encoding']
+    confidence = detector.result['confidence']
+    logging.info(f"The file '{uploaded_file_}' follows an encoding format '{encoding}' at {confidence} confidence.")
+    return encoding
+
 
 if __name__ == '__main__':
     # Do not modify if you use the deployment container!
@@ -93,10 +120,12 @@ if __name__ == '__main__':
                 logging.warning(
                     f"\"catalog_bl\" property is not defined for variable")
 
-            if 'catalog_bl' in variable and variable['catalog_bl'] is True and str(variable['format']).lower() != "boolean":
+            if 'catalog_bl' in variable and variable['catalog_bl'] is True and str(
+                    variable['format']).lower() != "boolean":
                 logging.info(
                     f"Checking variables that are defined based on a catalog.")
-                if variable['catalog'] is None or 'column_name' not in variable['catalog'] or 'filename' not in variable['catalog']:
+                if variable['catalog'] is None or 'column_name' not in variable['catalog'] or 'filename' not in \
+                        variable['catalog']:
                     logging.error(
                         f"\"catalog\" for your variable \"{entity_name}\" is not well defined in your configuration file! Check the specifications!")
                     exit(1)
@@ -105,7 +134,10 @@ if __name__ == '__main__':
 
                 catalog_path = os.path.join('../../docs/CDM/entities', entity_name, 'catalogs', filename)
                 try:
-                    catalog_table = pd.read_csv(catalog_path)
+                    encoding = infer_encoding(catalog_path)
+                    with open(catalog_path, mode='rt', encoding=encoding) as file:
+                        separator, header = infer_separator(file, filename)
+                        catalog_table = pd.read_csv(catalog_path, sep=separator, encoding=encoding)
                 except Exception as e:
                     logging.error(
                         f"An attempt was made to read catalog \"{filename}\" but it failed. does the file exist in "
@@ -120,8 +152,10 @@ if __name__ == '__main__':
                 catalog_result = con.query(catalog_query).to_df()
                 logging.warning(
                     f"{len(list(catalog_result[variable['label']].unique()))} different erroneous values were found in the data according to the catalog.")
-                wrong_lines = list(catalog_result['wrong_lines'].values[:10]) + list([f"+{len(catalog_result['wrong_lines'].values)-10} lines"])
-                wrong_values = list(catalog_result[variable['label']].unique()[:10]) + list([f"+{len(catalog_result[variable['label']].unique())-10} values"])
+                wrong_lines = list(catalog_result['wrong_lines'].values[:10]) + list(
+                    [f"+{len(catalog_result['wrong_lines'].values) - 10} lines"])
+                wrong_values = list(catalog_result[variable['label']].unique()[:10]) + list(
+                    [f"+{len(catalog_result[variable['label']].unique()) - 10} values"])
                 if len(catalog_result['wrong_lines'].values) <= 10:
                     wrong_lines = list(catalog_result['wrong_lines'].values[:10])
                 if len(catalog_result[variable['label']].unique()) <= 10:
@@ -141,7 +175,8 @@ if __name__ == '__main__':
             # Check rules
             rules = entity['rules']
         else:
-            logging.warning(f"\"rules\" for your entity \"{entity_name}\" is not well defined in your configuration file! Check the specifications!")
+            logging.warning(
+                f"\"rules\" for your entity \"{entity_name}\" is not well defined in your configuration file! Check the specifications!")
             rules = []
 
         for rule in rules:
@@ -185,11 +220,11 @@ if __name__ == '__main__':
         con.execute(f"DROP VIEW IF EXISTS {view_name};")
     try:
         with open(os.path.join(output_path, 'validator_output.json'), 'w') as f:
-            json_object = json.dumps({'info':response}, indent=4)
+            json_object = json.dumps({'info': response}, indent=4)
             f.write(json_object)
             logging.info(f"validator_output.json created.")
     except Exception as e:
         logging.error(f"Something went wrong trying to write \"validator_output\" files")
         logging.error(str(e))
-    
+
     con.close()

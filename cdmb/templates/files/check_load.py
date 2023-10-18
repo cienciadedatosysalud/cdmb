@@ -4,18 +4,33 @@ import logging
 import os
 import re
 
-import duckdb  # duckdb-0.8.1
+import duckdb
 import pandas as pd
+import chardet
 
 
-def infer_separator(file_):
+def infer_separator(file_,uploaded_file_):
     firstline = file_.readline().rstrip()
+    logging.info(f"Header for the file '{uploaded_file_}':\n\n{firstline} \n")
     separators = re.sub('"*[a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
     if len(separators) > 0:
         return separators[0], firstline
     else:
         # Return random separator, exception will be thrown on header reading
         return '|'
+
+def infer_encoding(uploaded_file_):
+    logging.info(f"Trying to detect the encoding of the file '{uploaded_file_}'")
+    detector = chardet.UniversalDetector()
+    with open(uploaded_file_, "rb") as f:
+        for line in f.readlines():
+            detector.feed(line)
+            if detector.done: break
+        detector.close()
+    encoding = detector.result['encoding']
+    confidence = detector.result['confidence']
+    logging.info(f"The file '{uploaded_file_}' follows an encoding format '{encoding}' at {confidence} confidence.")
+    return encoding
 
 
 def read_file(entity_structure, dtype_, parse_dates):
@@ -25,7 +40,8 @@ def read_file(entity_structure, dtype_, parse_dates):
             entity_structure['uploaded_filename'],
             sep=entity_structure['separator'],
             dtype=dtype_,
-            parse_dates=parse_dates
+            parse_dates=parse_dates,
+            encoding=entity_structure['encoding']
         )
         len_df = len(df)
         logging.info(f"{len_df} records read.")
@@ -35,7 +51,8 @@ def read_file(entity_structure, dtype_, parse_dates):
         logging.error(str(e))
         df = pd.read_csv(
             entity_structure['uploaded_filename'],
-            sep=entity_structure['separator']
+            sep=entity_structure['separator'],
+            encoding=entity_structure['encoding']
         )
         variables_name = []
         variables_format = []
@@ -58,6 +75,8 @@ def load_file(entity_structure, df):
         query = "INSERT INTO {entity} SELECT * FROM df;".format(entity=entity_name_)
         con.execute(query)
         logging.info(f"{entity_structure['uploaded_filename']} -> LOADED!")
+        global entities_uploaded
+        entities_uploaded = entities_uploaded + 1
     except Exception as e:
         logging.error("Something went wrong trying to insert the data!")
         logging.error(str(e))
@@ -154,7 +173,8 @@ if __name__ == '__main__':
     configuration_file_path = '../../docs/CDM/cdmb_config.json'
     output_path = '../../outputs'
     upload_files_path = './inputs'
-
+    global entities_uploaded
+    entities_uploaded = 0
     # Opening JSON file
     try:
         with open(configuration_file_path) as configuration_file:
@@ -168,14 +188,16 @@ if __name__ == '__main__':
     logging.info(f"-Found {len(csv_files)} uploaded files to check and map!")
     for uploaded_file in csv_files:
         try:
-            with open(uploaded_file, mode='rt', encoding='utf-8') as file:
-                separator, header = infer_separator(file)
+            encoding = infer_encoding(uploaded_file)
+            with open(uploaded_file, mode='rt', encoding=encoding) as file:
+                separator, header = infer_separator(file,uploaded_file)
                 logging.info(f"Inferred separator \"{separator}\" for \"{uploaded_file}\" file ")
                 header_variable_list = [column.replace("\"", "").strip() for column in str(header).split(separator)]
                 uploaded_file_structure.append({
                     'filename': uploaded_file,
                     'header': header_variable_list,
-                    'separator': separator
+                    'separator': separator,
+                    'encoding':encoding
                 })
         except Exception as e:
             logging.error(f"Something went wrong trying to read \"{uploaded_file}\" file")
@@ -221,39 +243,47 @@ if __name__ == '__main__':
                                            in uploaded_filename_list]
                 uploaded_filename = [uploaded_filename_['filename'] for uploaded_filename_ in uploaded_filename_list]
                 separator = [uploaded_filename_['separator'] for uploaded_filename_ in uploaded_filename_list]
+                encoding = [uploaded_filename_['encoding'] for uploaded_filename_ in uploaded_filename_list]
             else:
                 logging.warning(f"No file of the uploaded files has been found that matches the header with the "
                                 f"configuration of the \"{entity_name}\" entity.!")
                 uploaded_filename_clean = None
                 uploaded_filename = None
                 separator = None
+                encoding = None
             entities_structure.append({
                 'entity_name': entity_name,
                 'entity_variables': entity_variables,
                 'entity_formats': entity_formats,
                 'uploaded_filename_clean': uploaded_filename_clean,
                 'uploaded_filename': uploaded_filename,
-                'separator': separator
+                'separator': separator,
+                'encoding': encoding
             })
         logging.info("Starting the check of the files that do match an entity.")
         logging.info(entities_structure)
         for entity_structure_ in entities_structure:
             if entity_structure_['uploaded_filename'] is not None:
                 #
-                for uploaded_filename_clean, uploaded_filename, separator in zip(
+                for uploaded_filename_clean, uploaded_filename, separator, encoding in zip(
                         entity_structure_['uploaded_filename_clean'],
                         entity_structure_['uploaded_filename'],
-                        entity_structure_['separator']):
+                        entity_structure_['separator'],
+                        entity_structure_['encoding']):
                     check_file({
                         'entity_name': entity_structure_['entity_name'],
                         'entity_variables': entity_structure_['entity_variables'],
                         'entity_formats': entity_structure_['entity_formats'],
                         'uploaded_filename_clean': uploaded_filename_clean,
                         'uploaded_filename': uploaded_filename,
-                        'separator': separator
+                        'separator': separator,
+                        'encoding': encoding
                     })
             else:
                 pass
+        if entities_uploaded == 0:
+            logging.error("None of the uploaded files have been matched with an entity!")
+            exit(1)
     else:
         logging.error("\"entities\" not found in your configuration file! Check specifications!")
         exit(1)

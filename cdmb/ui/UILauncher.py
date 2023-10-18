@@ -4,7 +4,7 @@ import os
 import re
 import tempfile
 import zipfile
-from io import StringIO, BytesIO
+from io import BytesIO
 from typing import Annotated
 from typing import Union
 
@@ -30,6 +30,8 @@ from cdmb.entities.Variable import Variable
 from cdmb.project.Author import Author
 from cdmb.project.Metadata import Metadata
 
+import chardet
+
 app = FastAPI()
 
 origins = ["*"]
@@ -43,8 +45,8 @@ app.add_middleware(
 )
 
 
-def infer_separator(stringio_):
-    firstline = stringio_.readline().rstrip()
+def infer_separator(stringio_,encoding):
+    firstline = str(stringio_.readline().rstrip(),encoding)
     stringio_.seek(0)
     separators = re.sub('"*[a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
     if len(separators) > 0:
@@ -52,6 +54,17 @@ def infer_separator(stringio_):
     else:
         # Return random separator, exception will be thrown on header reading
         return '|'
+
+
+def infer_encoding(uploaded_file_):
+    detector = chardet.UniversalDetector()
+    for line in uploaded_file_.readlines():
+        detector.feed(line)
+        if detector.done: break
+    uploaded_file_.seek(0)
+    detector.close()
+    encoding = detector.result['encoding']
+    return encoding
 
 
 def zipfiles(file_list, output_dir):
@@ -114,12 +127,9 @@ def create_cohort(cohort: Annotated[str, Form(media_type="multipart/form-data")]
         if filename_ != '':
             for file in files:
                 if filename_ == file.filename:
-                    contents = file.file.read()
-                    s = str(contents, 'utf-8')
-                    data = StringIO(s)
-                    separator = infer_separator(data)
-                    df_crosswalks = pd.read_csv(data, sep=separator)
-                    data.close()
+                    encoding = infer_encoding(file.file)
+                    separator = infer_separator(file.file,encoding)
+                    df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding)
                     file.file.close()
                     cohort.cohort_definition_inclusion = Crosswalks(df_crosswalks,
                                                                     cohort_['cohort_definition_inclusion'][
@@ -131,12 +141,9 @@ def create_cohort(cohort: Annotated[str, Form(media_type="multipart/form-data")]
         if filename_ != '':
             for file in files:
                 if file.file.closed is False and filename_ == file.filename:
-                    contents = file.file.read()
-                    s = str(contents, 'utf-8')
-                    data = StringIO(s)
-                    separator = infer_separator(data)
-                    df_crosswalks = pd.read_csv(data, sep=separator)
-                    data.close()
+                    encoding = infer_encoding(file.file)
+                    separator = infer_separator(file.file, encoding)
+                    df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding)
                     file.file.close()
                     cohort.cohort_definition_exclusion = Crosswalks(df_crosswalks,
                                                                     cohort_[
@@ -168,13 +175,9 @@ def create_variable(x, files):
         if files is not None:
             for file in files:
                 if file.file.closed is False and filename_ == file.filename:
-                    contents = file.file.read()
-                    s = str(contents, 'utf-8')
-                    data = StringIO(s)
-                    separator = infer_separator(data)
-                    df_catalog = pd.read_csv(data, sep=separator)
-                    data.close()
-                    # file.file.seek(0)
+                    encoding = infer_encoding(file.file)
+                    separator = infer_separator(file.file, encoding)
+                    df_catalog = pd.read_csv(file.file, sep=separator, encoding=encoding)
                     file.file.close()
                     variable.catalog = Catalog(df_catalog, columnname_, filename_)
                     break
@@ -200,7 +203,7 @@ def create_entities(entities: Annotated[str, Form(media_type="multipart/form-dat
             core_info["variables"] = variables_info
             entity_ = Entity(**core_info)
         except Exception as e:
-            output = f"Something went wrong creating Entity (No. {idx}): "
+            output = f"Something went wrong creating Entity (No. {int(idx) + 1}): "
             output += str(e)
             raise HTTPException(status_code=400, detail=output)
 
@@ -248,7 +251,8 @@ def create_project_with_files(configuration: Annotated[str, Form(media_type="mul
         cdm = CommonDataModel(metadata_, cohort_, entities_, relationships_)
         with tempfile.TemporaryDirectory(dir='.') as output_dir:
             cdm.save_project(output_dir)
-            file_list = glob.glob(output_dir + "/**", recursive=True) + glob.glob(output_dir + "/**/.git*", recursive=True)
+            file_list = glob.glob(output_dir + "/**", recursive=True) + glob.glob(output_dir + "/**/.git*",
+                                                                                  recursive=True)
             return zipfiles(file_list, output_dir)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

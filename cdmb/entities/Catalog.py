@@ -44,6 +44,8 @@ Examples
         _check_type(data, DataFrame)
         _check_type(column_name, str)
         column_name = column_name.strip('\"')
+        # Deleted space in the last column
+        column_name = column_name.strip()
         _check_type(filename, str)
         if column_name not in data.columns:
             raise Exception(

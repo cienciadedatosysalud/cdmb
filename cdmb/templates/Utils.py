@@ -8,6 +8,7 @@ def generate_documentation(out_dir):
     copyFileValidator(out_dir)
     copyFileDqa(out_dir)
     copyFileCheckLoad(out_dir)
+    copyFilesEmptyFolders(out_dir)
 
 
 def copyFileDoc(out_dir: str):
@@ -47,3 +48,23 @@ def copyFilesTemplates(out_dir: str):
         original = os.path.join(os.path.dirname(__file__), "files", filename)
         target = os.path.join(out_dir, "src", "analysis-scripts", filename)
         shutil.copyfile(original, target)
+
+
+def copyFilesEmptyFolders(out_dir: str):
+    # inputs
+    original = os.path.join(os.path.dirname(__file__), "files", 'readme_input.txt')
+    target = os.path.join(out_dir, "inputs", "readme.txt")
+    shutil.copyfile(original, target)
+    # src/check_load-scripts/inputs
+    original = os.path.join(os.path.dirname(__file__), "files", 'readme_input.txt')
+    target = os.path.join(out_dir, "src", "check_load-scripts", "inputs", "readme.txt")
+    shutil.copyfile(original, target)
+    # outputs
+    original = os.path.join(os.path.dirname(__file__), "files", 'readme_outputs.txt')
+    target = os.path.join(out_dir, "outputs", 'readme.txt')
+    shutil.copyfile(original, target)
+
+    # outputs logs
+    original = os.path.join(os.path.dirname(__file__), "files", 'readme_logs.txt')
+    target = os.path.join(out_dir, "outputs", "logs", "readme.txt")
+    shutil.copyfile(original, target)

@@ -9,7 +9,7 @@
 	<link rel="icon" href="./favicon.png" />
 	<meta name="viewport" content="width=device-width" />
 	<meta http-equiv="content-security-policy" content="">
-		<link href="./_app/immutable/assets/0.83e0eb50.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/0.9c410628.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/Indicator.1d121e74.css" rel="stylesheet"><title>Validation</title><!-- HEAD_svelte-1cf0xe4_START --><meta name="description" content="About this app"><!-- HEAD_svelte-1cf0xe4_END -->
 </head>
 
@@ -40,7 +40,7 @@
 
 
   <main class="svelte-nv0ll5">
-<div class="fixed right-6 bottom-6 group"><button type="button" name="Open actions menu" aria-controls="lkmazr6g" aria-expanded="false" class="text-center font-medium focus:ring-4 focus:outline-none inline-flex items-center justify-center px-5 py-2.5 text-sm text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300 dark:focus:ring-yellow-900 rounded-full !p-3">
+<div class="fixed right-6 bottom-6 group"><button type="button" name="Open actions menu" aria-controls="lnvexakh" aria-expanded="false" class="text-center font-medium focus:ring-4 focus:outline-none inline-flex items-center justify-center px-5 py-2.5 text-sm text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300 dark:focus:ring-yellow-900 rounded-full !p-3">
       <svg aria-hidden="true" class="w-8 h-8 transition-transform group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
     
     <span class="sr-only">Open actions menu</span></button>
@@ -53,24 +53,19 @@
 
 
 <div class="svelteui-c-iGtvjx svelteui-c-iGtvjx-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
-<p>This section is intended to declare validation rules that will follow the
-	entities declared in the previous section.
-</p>
-<p>The format of the rules follows the operation syntax of the high performance
-	analytical database system DuckDB (For more information, visit <a target="_blank" href="https://duckdb.org/docs/" class="text-blue-600 dark:text-blue-500 hover:underline">DuckDB</a>).
+<p>This section is intended to declare validation rules that will follow the entities declared in the previous section.</p>
+<p>The format of the rules follows the operation syntax of the high performance analytical database system DuckDB (For more information, visit 
+	<a target="_blank" href="https://duckdb.org/docs/" class="text-blue-600 dark:text-blue-500 hover:underline">DuckDB</a>).
 </p>
 
-<p>The tool does not validate the rules uploaded by the user. In case it cannot
-	identify the type of rule entered it is assigned to a general rule type for
-	further debugging by the user.
-</p>
+<p>The tool does not validate the rules uploaded by the user. In case it cannot identify the type of rule entered it is assigned to a general rule type for further debugging by the user.</p>
 
 <p>Example of rules:</p>
 
 
 
 <div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
-<p>- Check null values (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/comparison_operators" class="text-blue-600 dark:text-blue-500 hover:underline">Comparisons</a>).
+<p>- Check null values. (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/comparison_operators" class="text-blue-600 dark:text-blue-500 hover:underline">Comparisons</a>).
 </p>
 
 
@@ -103,14 +98,14 @@
 
 
 <div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
-<p>- Values of a variable contained in a table of values (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/in" class="text-blue-600 dark:text-blue-500 hover:underline">IN Operator</a>).
+<p>- Values of a variable contained in a table of values. (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/in" class="text-blue-600 dark:text-blue-500 hover:underline">IN Operator</a>).
 </p>
 <kbd class="text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 px-2 py-1.5">country_cd IN (&#39;ES&#39;, &#39;BE&#39;, &#39;DE&#39;, NULL)</kbd>
 
 
 
 <div class="svelteui-c-vTXmM svelteui-c-vTXmM-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
-<p>- Complex rules (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/overview" class="text-blue-600 dark:text-blue-500 hover:underline">Expressions</a>)
+<p>- Complex rules. (<a target="_blank" href="https://duckdb.org/docs/sql/expressions/overview" class="text-blue-600 dark:text-blue-500 hover:underline">Expressions</a>).
 </p>
 
 
@@ -121,14 +116,9 @@
 
 
 <div class="svelteui-c-ljgopy svelteui-c-ljgopy-iPJLV-css svelteui-c-PJLV svelteui-c-PJLV-iPJLV-css"></div>
-<p>It is <strong>recommended to download the template</strong> of the entity that
-	needs validation rules, look at the examples and modify them to fit the purpose.
-</p>
+<p><!-- HTML_TAG_START -->It is <strong>recommended to download the template</strong> of the entity that needs validation rules, look at the examples and modify them to fit the purpose.<!-- HTML_TAG_END --></p>
 <p>Once the rules are declared, upload the file in the corresponding entity.</p>
-<p>This step is <strong>not mandatory</strong> and will only affect the synthetic
-	data generation at this point. You can modify the validation rules file in the
-	following path of the generated structure:
-</p>
+<p><!-- HTML_TAG_START -->This step is <strong>not mandatory</strong> and will only affect the synthetic data generation at this point. You can modify the validation rules file in the following path of the generated structure:<!-- HTML_TAG_END --></p>
 
 
 

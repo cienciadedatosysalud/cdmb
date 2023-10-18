@@ -103,4 +103,4 @@ tryCatch(
 ```
 
 
-This template has been created by the research group: Data Science for Health Services and Policy Research. You can find us on Github by clicking on the following link: [Ciencia de datos y salud](https://github.com/cienciadedatosysalud).
+This template has been created by the research group: Data Science for Health Services and Policy Research. You can find us on GitHub by clicking on the following link: [Ciencia de datos y salud](https://github.com/cienciadedatosysalud).

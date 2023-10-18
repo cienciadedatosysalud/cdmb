@@ -43,6 +43,7 @@ rocrate = "^0.8.0"
 openpyxl = "^3.1.2"
 uvicorn = "^0.22.0"
 python-multipart = "^0.0.6"
+chardet = "^5.2.0"
 
 [build-system]
 requires = ["poetry-core"]

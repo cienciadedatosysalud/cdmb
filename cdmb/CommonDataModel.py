@@ -2,6 +2,7 @@ import datetime
 import glob
 import hashlib
 import json
+import logging
 import os
 import re
 import shutil
@@ -34,6 +35,7 @@ from .project.Metadata import Metadata
 from .relationships.Relationship import Relationship
 from .templates import Utils
 from dateutil.parser import parse
+import chardet
 
 def is_float(param: str):
     try:
@@ -193,9 +195,15 @@ class CommonDataModel:
         self.__write_configuration_file()
         self.__write_catalogs()
         self.__generate_synthetic()
-        self.__save_er()
+        er_created = True
+        try:
+            self.__save_er()
+        except Exception as e_:
+            logging.error("Something went wrong when creating Entity-Relationship diagrams using Graphviz. Do you have Graphviz installed on your system?")
+            logging.error(e_)
+            er_created = False
         Utils.generate_documentation(self.__getRootPath())
-        self.__create_rog()
+        self.__create_rog(er_created)
         self.__generate_md5()
 
     def save_zipped_project(self, out_dir: str = "."):
@@ -630,7 +638,7 @@ class CommonDataModel:
 
             con.sql("CREATE TABLE " + entity.name + " AS SELECT * FROM df")
 
-    def __create_rog(self):
+    def __create_rog(self,er_created):
         crate = ROCrate()
         authors = []
         orcid_prefix = "https://orcid.org/"
@@ -804,24 +812,24 @@ class CommonDataModel:
                     "encodingFormat": "text/csv"
                 })
             crosswalks["author"] = authors
+        if er_created:
+            er_png_path = os.path.join(self.__getDocsPath(), "ER.gv.png")
+            er_diagram_png = crate.add_file(er_png_path, dest_path=er_png_path.replace(self.__getRootPath() + '/', ''),
+                                            properties={
+                                                "@type": "File",
+                                                "name": "Entity Relationship Diagram PNG",
+                                                "encodingFormat": "image/png"
+                                            })
+            er_diagram_png["author"] = authors
 
-        er_png_path = os.path.join(self.__getDocsPath(), "ER.gv.png")
-        er_diagram_png = crate.add_file(er_png_path, dest_path=er_png_path.replace(self.__getRootPath() + '/', ''),
-                                        properties={
-                                            "@type": "File",
-                                            "name": "Entity Relationship Diagram PNG",
-                                            "encodingFormat": "image/png"
-                                        })
-        er_diagram_png["author"] = authors
-
-        er_gv_path = os.path.join(self.__getDocsPath(), "ER.gv")
-        er_diagram_gv = crate.add_file(er_gv_path, dest_path=er_gv_path.replace(self.__getRootPath() + '/', ''),
-                                       properties={
-                                           "@type": "File",
-                                           "name": "Entity Relationship Diagram GV",
-                                           "encodingFormat": "text/plain"
-                                       })
-        er_diagram_gv["author"] = authors
+            er_gv_path = os.path.join(self.__getDocsPath(), "ER.gv")
+            er_diagram_gv = crate.add_file(er_gv_path, dest_path=er_gv_path.replace(self.__getRootPath() + '/', ''),
+                                           properties={
+                                               "@type": "File",
+                                               "name": "Entity Relationship Diagram GV",
+                                               "encodingFormat": "text/plain"
+                                           })
+            er_diagram_gv["author"] = authors
 
         # Entities files
         for entity in self.entities:
@@ -1024,8 +1032,8 @@ class CommonDataModel:
             relationships (list[Relationship]): r
         """
 
-        def infer_separator(stringio_):
-            firstline = stringio_.readline().rstrip()
+        def infer_separator(stringio_, encoding):
+            firstline = str(stringio_.readline().rstrip(), encoding)
             stringio_.seek(0)
             separators = re.sub('"*[a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
             if len(separators) > 0:
@@ -1033,6 +1041,16 @@ class CommonDataModel:
             else:
                 # Return random separator, exception will be thrown on header reading
                 return '|'
+
+        def infer_encoding(uploaded_file_):
+            detector = chardet.UniversalDetector()
+            for line in uploaded_file_.readlines():
+                detector.feed(line)
+                if detector.done: break
+            uploaded_file_.seek(0)
+            detector.close()
+            encoding = detector.result['encoding']
+            return encoding
 
         def create_variable(x, _files):
             catalog = None
@@ -1047,12 +1065,9 @@ class CommonDataModel:
                 columnname_ = catalog['column_name']
                 for file_ in _files:
                     if file_.file.closed is False and filename_temp == file_.filename:
-                        contents_ = file_.file.read()
-                        s_ = str(contents_, 'utf-8')
-                        data_ = StringIO(s_)
-                        separator_ = infer_separator(data_)
-                        df_catalog = pd.read_csv(data_, sep=separator_)
-                        data_.close()
+                        encoding = infer_encoding(file.file)
+                        separator = infer_separator(file.file, encoding)
+                        df_catalog = pd.read_csv(file.file, sep=separator,encoding=encoding)
                         file_.file.close()
                         variable.catalog = Catalog(df_catalog, columnname_, filename_temp)
                         break
@@ -1082,12 +1097,9 @@ class CommonDataModel:
             if filename_ != '':
                 for file in files:
                     if file.file.closed is False and filename_ == file.filename:
-                        contents = file.file.read()
-                        s = str(contents, 'utf-8')
-                        data = StringIO(s)
-                        separator = infer_separator(data)
-                        df_crosswalks = pd.read_csv(data, sep=separator)
-                        data.close()
+                        encoding = infer_encoding(file.file)
+                        separator = infer_separator(file.file, encoding)
+                        df_crosswalks = pd.read_csv(file.file, sep=separator,encoding=encoding)
                         file.file.close()
                         cohort.cohort_definition_inclusion = Crosswalks(df_crosswalks,
                                                                         configuration['cohort'][
@@ -1102,12 +1114,9 @@ class CommonDataModel:
             if filename_ != '':
                 for file in files:
                     if file.file.closed is False and filename_ == file.filename:
-                        contents = file.file.read()
-                        s = str(contents, 'utf-8')
-                        data = StringIO(s)
-                        separator = infer_separator(data)
-                        df_crosswalks = pd.read_csv(data, sep=separator)
-                        data.close()
+                        encoding = infer_encoding(file.file)
+                        separator = infer_separator(file.file, encoding)
+                        df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding)
                         file.file.close()
                         cohort.cohort_definition_exclusion = Crosswalks(df_crosswalks,
                                                                         configuration['cohort'][
