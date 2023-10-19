@@ -44,6 +44,7 @@ openpyxl = "^3.1.2"
 uvicorn = "^0.22.0"
 python-multipart = "^0.0.6"
 chardet = "^5.2.0"
+poetry-semver = "^0.1.0"
 
 [build-system]
 requires = ["poetry-core"]

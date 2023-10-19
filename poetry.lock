@@ -1053,6 +1053,17 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "poetry-semver"
+version = "0.1.0"
+description = "A semantic versioning library for Python"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "poetry-semver-0.1.0.tar.gz", hash = "sha256:d809b612aa27b39bf2d0fc9d31b4f4809b0e972646c5f19cfa46c725b7638810"},
+    {file = "poetry_semver-0.1.0-py2.py3-none-any.whl", hash = "sha256:4e6349bd7231cc657f0e1930f7b204e87e33dfd63eef5cac869363969515083a"},
+]
+
+[[package]]
 name = "pydantic"
 version = "1.10.10"
 description = "Data validation and settings management using python type hints"
@@ -1653,4 +1664,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "91c158e713e07634b5297385254fa0b36105010fbec8ca57871d3009cde7a0a6"
+content-hash = "5809b6ce8964cb1d8e84711277b2d070945e9929a0f1fab6a834fd94fa99e6df"
