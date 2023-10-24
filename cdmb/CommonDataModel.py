@@ -1065,9 +1065,9 @@ class CommonDataModel:
                 columnname_ = catalog['column_name']
                 for file_ in _files:
                     if file_.file.closed is False and filename_temp == file_.filename:
-                        encoding = infer_encoding(file.file)
-                        separator = infer_separator(file.file, encoding)
-                        df_catalog = pd.read_csv(file.file, sep=separator,encoding=encoding)
+                        encoding = infer_encoding(file_.file)
+                        separator = infer_separator(file_.file, encoding)
+                        df_catalog = pd.read_csv(file_.file, sep=separator,encoding=encoding)
                         file_.file.close()
                         variable.catalog = Catalog(df_catalog, columnname_, filename_temp)
                         break
