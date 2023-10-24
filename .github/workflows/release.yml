@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - "v*.*.*"
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,4 +14,5 @@ jobs:
         uses: JRubics/poetry-publish@v1.17
         with:
           pypi_token: ${{ secrets.PYPI_TOKEN }}
+          poetry_version: "==1.5.1"
           plugins: "poetry-dynamic-versioning-plugin"

@@ -59,7 +59,7 @@ Use the following code snippet to create the container.
 ```bash
 docker pull ghcr.io/cienciadedatosysalud/cdmb:latest
 
-docker run -p 127.0.0.1:8501:8501 --name cdmb_ui ghcr.io/cienciadedatosysalud/cdmb:latest
+docker run -d -p 127.0.0.1:8501:8501 --name cdmb_ui ghcr.io/cienciadedatosysalud/cdmb:latest
 
 # Open your web browser at http://localhost:8501.
 ```
@@ -733,6 +733,15 @@ and ![orcid](https://orcid.org/sites/default/files/images/orcid_16x16.png) [Sant
 # How to contribute
 - Repository: https://github.com/cienciadedatosysalud/cdmb/
 - Issue tracker: https://github.com/cienciadedatosysalud/cdmb/issues
+
+## Translate Common Data Model Builder (cdmb) to your language
+
+CDMB uses https://github.com/kaisermann/svelte-i18n for internationalization.
+
+Currently 'cdmb' supports English (by default) and Spanish. Language selection is based on the default language set in your browser.
+
+You can contribute adding another language. If you are interested in having the tool in your language, please contact us through the following link:
+[Contact us](https://cienciadedatosysalud.org/en/contact/)
 
 # References
 - Data Science for Health Services and Policy Research group: https://cienciadedatosysalud.org/en/
