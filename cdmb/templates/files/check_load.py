@@ -40,7 +40,7 @@ def read_file(entity_structure, dtype_, parse_dates):
             entity_structure['uploaded_filename'],
             sep=entity_structure['separator'],
             dtype=dtype_,
-            parse_dates=parse_dates,
+            #parse_dates=parse_dates,
             encoding=entity_structure['encoding']
         )
         df = df[entity_structure['entity_variables']]  
