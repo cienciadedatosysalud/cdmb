@@ -1067,7 +1067,7 @@ class CommonDataModel:
                     if file_.file.closed is False and filename_temp == file_.filename:
                         encoding = infer_encoding(file_.file)
                         separator = infer_separator(file_.file, encoding)
-                        df_catalog = pd.read_csv(file_.file, sep=separator,encoding=encoding)
+                        df_catalog = pd.read_csv(file_.file, sep=separator,encoding=encoding,dtype='str')
                         file_.file.close()
                         variable.catalog = Catalog(df_catalog, columnname_, filename_temp)
                         break
@@ -1099,7 +1099,7 @@ class CommonDataModel:
                     if file.file.closed is False and filename_ == file.filename:
                         encoding = infer_encoding(file.file)
                         separator = infer_separator(file.file, encoding)
-                        df_crosswalks = pd.read_csv(file.file, sep=separator,encoding=encoding)
+                        df_crosswalks = pd.read_csv(file.file, sep=separator,encoding=encoding,dtype='str')
                         file.file.close()
                         cohort.cohort_definition_inclusion = Crosswalks(df_crosswalks,
                                                                         configuration['cohort'][
@@ -1116,7 +1116,7 @@ class CommonDataModel:
                     if file.file.closed is False and filename_ == file.filename:
                         encoding = infer_encoding(file.file)
                         separator = infer_separator(file.file, encoding)
-                        df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding)
+                        df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding,dtype='str')
                         file.file.close()
                         cohort.cohort_definition_exclusion = Crosswalks(df_crosswalks,
                                                                         configuration['cohort'][

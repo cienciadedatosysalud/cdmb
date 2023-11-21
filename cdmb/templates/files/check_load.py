@@ -43,6 +43,7 @@ def read_file(entity_structure, dtype_, parse_dates):
             parse_dates=parse_dates,
             encoding=entity_structure['encoding']
         )
+        df = df[entity_structure['entity_variables']]  
         len_df = len(df)
         logging.info(f"{len_df} records read.")
         return df
@@ -223,11 +224,15 @@ if __name__ == '__main__':
             uploaded_filename_ = None
             uploaded_filename_list = []
             for file_structure in uploaded_file_structure:
-                if set(entity_variables) == set(file_structure['header']):
+                if set(entity_variables) == set(file_structure['header']) and len(entity_variables) == len(file_structure['header']):
                     uploaded_filename_ = file_structure
                     logging.info("One of the uploaded files has been found that matches the entity's configuration.")
                     logging.info(f"\"{entity_name}\" with {file_structure['filename']} file")
                     uploaded_filename_list.append(uploaded_filename_)
+                    ## Check that it complies with the order of variables of the common data model.
+                    same_order = all(list(map(lambda x, y: x == y, entity_variables, file_structure['header'])))
+                    if not same_order:
+                        logging.error("Attention! The file that matches the entity's configuration does not have the header in the same order as requested in the Common Data Model. Keep this in mind.")
                 else:
                     pass
 

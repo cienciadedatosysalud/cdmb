@@ -129,7 +129,7 @@ def create_cohort(cohort: Annotated[str, Form(media_type="multipart/form-data")]
                 if filename_ == file.filename:
                     encoding = infer_encoding(file.file)
                     separator = infer_separator(file.file,encoding)
-                    df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding)
+                    df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding,dtype='str')
                     file.file.close()
                     cohort.cohort_definition_inclusion = Crosswalks(df_crosswalks,
                                                                     cohort_['cohort_definition_inclusion'][
@@ -143,7 +143,7 @@ def create_cohort(cohort: Annotated[str, Form(media_type="multipart/form-data")]
                 if file.file.closed is False and filename_ == file.filename:
                     encoding = infer_encoding(file.file)
                     separator = infer_separator(file.file, encoding)
-                    df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding)
+                    df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding,dtype='str')
                     file.file.close()
                     cohort.cohort_definition_exclusion = Crosswalks(df_crosswalks,
                                                                     cohort_[
@@ -177,7 +177,7 @@ def create_variable(x, files):
                 if file.file.closed is False and filename_ == file.filename:
                     encoding = infer_encoding(file.file)
                     separator = infer_separator(file.file, encoding)
-                    df_catalog = pd.read_csv(file.file, sep=separator, encoding=encoding)
+                    df_catalog = pd.read_csv(file.file, sep=separator, encoding=encoding,dtype='str')
                     file.file.close()
                     variable.catalog = Catalog(df_catalog, columnname_, filename_)
                     break
