@@ -61,9 +61,8 @@ docker pull ghcr.io/cienciadedatosysalud/cdmb:latest
 
 docker run -d -p 127.0.0.1:8501:8501 --name cdmb_ui ghcr.io/cienciadedatosysalud/cdmb:latest
 
-# Open your web browser at http://localhost:8501.
 ```
-
+Open your web browser at http://localhost:8501.
 
 # Outputs
 Outputs structure and content is described below including the files and folders that are generated when creating a research project with the `cdmb` Python library. There are four main folders corresponding to:
