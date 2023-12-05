@@ -23,6 +23,7 @@ from openpyxl.workbook import Workbook
 from rocrate.model.person import Person
 from rocrate.rocrate import ROCrate
 
+import cdmb
 from .typing.CommonDataModelTyping import JoinOptions
 from .cohort.Cohort import Cohort
 from .cohort.Crosswalks import Crosswalks
@@ -36,6 +37,8 @@ from .relationships.Relationship import Relationship
 from .templates import Utils
 from dateutil.parser import parse
 import chardet
+import importlib.metadata
+
 
 def is_float(param: str):
     try:
@@ -52,12 +55,14 @@ def is_int(param: str):
     except ValueError:
         return False
 
+
 def is_date(string, fuzzy=False):
     try:
         parse(string, fuzzy=fuzzy)
         return True
     except ValueError:
         return False
+
 
 class CommonDataModel:
     def __init__(self,
@@ -199,7 +204,8 @@ class CommonDataModel:
         try:
             self.__save_er()
         except Exception as e_:
-            logging.error("Something went wrong when creating Entity-Relationship diagrams using Graphviz. Do you have Graphviz installed on your system?")
+            logging.error(
+                "Something went wrong when creating Entity-Relationship diagrams using Graphviz. Do you have Graphviz installed on your system?")
             logging.error(e_)
             er_created = False
         Utils.generate_documentation(self.__getRootPath())
@@ -225,6 +231,7 @@ class CommonDataModel:
     def generate_json_structure(self) -> dict:
         response = {
             "created_dt": self._created_dt,
+            "cdmb_version": cdmb.__version__,
             "uuid": self._uuid,
             'metadata': self.metadata.get_structure(),
             'cohort': self.cohort.get_structure(),
@@ -638,7 +645,7 @@ class CommonDataModel:
 
             con.sql("CREATE TABLE " + entity.name + " AS SELECT * FROM df")
 
-    def __create_rog(self,er_created):
+    def __create_rog(self, er_created):
         crate = ROCrate()
         authors = []
         orcid_prefix = "https://orcid.org/"
@@ -997,12 +1004,14 @@ class CommonDataModel:
 
                 right_entity_str = relationship["right_entity"]
                 if right_entity_str not in entities_catalog:
-                    raise ValueError("The right entity of the relationship does not match any of the declared entities.")
+                    raise ValueError(
+                        "The right entity of the relationship does not match any of the declared entities.")
                 right_entity = entities_catalog[right_entity_str]
 
                 join_type = relationship["join_type"]
                 if join_type not in JoinOptions.__args__:
-                    raise ValueError('join_type must be in {literal_values}'.format(literal_values=JoinOptions.__args__))
+                    raise ValueError(
+                        'join_type must be in {literal_values}'.format(literal_values=JoinOptions.__args__))
 
                 left_column = left_entity.get_variable_by_label(relationship["left_column"])
                 if left_column is None:
@@ -1067,7 +1076,7 @@ class CommonDataModel:
                     if file_.file.closed is False and filename_temp == file_.filename:
                         encoding = infer_encoding(file_.file)
                         separator = infer_separator(file_.file, encoding)
-                        df_catalog = pd.read_csv(file_.file, sep=separator,encoding=encoding,dtype='str')
+                        df_catalog = pd.read_csv(file_.file, sep=separator, encoding=encoding, dtype='str')
                         file_.file.close()
                         variable.catalog = Catalog(df_catalog, columnname_, filename_temp)
                         break
@@ -1099,7 +1108,7 @@ class CommonDataModel:
                     if file.file.closed is False and filename_ == file.filename:
                         encoding = infer_encoding(file.file)
                         separator = infer_separator(file.file, encoding)
-                        df_crosswalks = pd.read_csv(file.file, sep=separator,encoding=encoding,dtype='str')
+                        df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding, dtype='str')
                         file.file.close()
                         cohort.cohort_definition_inclusion = Crosswalks(df_crosswalks,
                                                                         configuration['cohort'][
@@ -1116,7 +1125,7 @@ class CommonDataModel:
                     if file.file.closed is False and filename_ == file.filename:
                         encoding = infer_encoding(file.file)
                         separator = infer_separator(file.file, encoding)
-                        df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding,dtype='str')
+                        df_crosswalks = pd.read_csv(file.file, sep=separator, encoding=encoding, dtype='str')
                         file.file.close()
                         cohort.cohort_definition_exclusion = Crosswalks(df_crosswalks,
                                                                         configuration['cohort'][

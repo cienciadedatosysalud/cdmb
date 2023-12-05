@@ -40,7 +40,7 @@ def read_file(entity_structure, dtype_, parse_dates):
             entity_structure['uploaded_filename'],
             sep=entity_structure['separator'],
             dtype=dtype_,
-            #parse_dates=parse_dates,
+            parse_dates=parse_dates,
             encoding=entity_structure['encoding']
         )
         df = df[entity_structure['entity_variables']]  
@@ -70,6 +70,7 @@ def load_file(entity_structure, df):
     logging.info(f"Trying to connect to the database ...")
     try:
         con = duckdb.connect(database_path, read_only=False)
+        con.execute("SET GLOBAL pandas_analyze_sample=500000")
         logging.info(f"Connected!")
         entity_name_ = entity_structure['entity_name']
         logging.info(f"Trying to load records in the table \"{entity_name_}\"")
@@ -183,7 +184,15 @@ if __name__ == '__main__':
     except FileNotFoundError as e:
         logging.error("Configuration file "" is missing!")
         exit(1)
-    logging.info("Configuration file loaded")
+    logging.info("Configuration file loaded\n")
+    CDMB_VERSION = configuration_file["cdmb_version"] if "cdmb_version" in configuration_file else "Non-versioned"
+    ASPIRE_VERSION = os.environ.get('ASPIRE_VERSION', 'Non-versioned')
+    PIPELINE_VERSION = os.environ.get('PIPELINE_VERSION', 'Non-versioned')
+    logging.info("#########################################")
+    logging.info(f"# CDMB version: {CDMB_VERSION}")
+    logging.info(f"# ASPIRE version: {ASPIRE_VERSION}")
+    logging.info(f"# PIPELINE version: {PIPELINE_VERSION}")
+    logging.info("#########################################\n")
     csv_files = glob.glob(upload_files_path + "/*.csv", recursive=True)
     uploaded_file_structure = []
     logging.info(f"-Found {len(csv_files)} uploaded files to check and map!")

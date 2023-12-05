@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cdmb"
-version = "1.3.5"
+version = "1.3.6"
 description = "Common Data Model Builder library"
 authors = [
     "Javier González-Galindo <jgonzalezga.iacs@aragon.es>",

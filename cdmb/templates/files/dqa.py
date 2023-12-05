@@ -24,7 +24,15 @@ if __name__ == '__main__':
     except FileNotFoundError as e:
         logging.error("Configuration file "" is missing!")
         exit(1)
-    logging.info("Configuration file loaded.")
+    logging.info("Configuration file loaded\n")
+    CDMB_VERSION = configuration_file["cdmb_version"] if "cdmb_version" in configuration_file else "Non-versioned"
+    ASPIRE_VERSION = os.environ.get('ASPIRE_VERSION', 'Non-versioned')
+    PIPELINE_VERSION = os.environ.get('PIPELINE_VERSION', 'Non-versioned')
+    logging.info("#########################################")
+    logging.info(f"# CDMB version: {CDMB_VERSION}")
+    logging.info(f"# ASPIRE version: {ASPIRE_VERSION}")
+    logging.info(f"# PIPELINE version: {PIPELINE_VERSION}")
+    logging.info("#########################################\n")
 
     if 'metadata' not in configuration_file:
         logging.error(

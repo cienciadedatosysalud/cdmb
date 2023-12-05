@@ -23,6 +23,8 @@ from cdmb.ui.UILauncher import launch_ui
 
 from cdmb.CommonDataModel import CommonDataModel
 
+__version__ = "1.3.6"
+
 __all__ = [
     "CommonDataModel",
     "Metadata",
