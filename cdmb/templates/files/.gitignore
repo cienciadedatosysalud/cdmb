@@ -5,6 +5,7 @@ outputs/*
 !outputs/logs/readme.txt
 !outputs/readme.txt
 src/check_load-scripts/inputs/*
+src/analysis-scripts/testing.py
 !src/check_load-scripts/inputs/readme.txt
 .Rproj.user
 *.Rproj

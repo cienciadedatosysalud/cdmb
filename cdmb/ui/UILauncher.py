@@ -5,12 +5,12 @@ import re
 import tempfile
 import zipfile
 from io import BytesIO
-from typing import Annotated
+from typing import Annotated, List
 from typing import Union
 
 import pandas as pd
 import uvicorn
-from fastapi import FastAPI, UploadFile, HTTPException, Request
+from fastapi import FastAPI, UploadFile, HTTPException, Request, File
 # python-multipart
 from fastapi import Form  # New way to declare that you want an openapi object in the form
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,7 +48,7 @@ app.add_middleware(
 def infer_separator(stringio_,encoding):
     firstline = str(stringio_.readline().rstrip(),encoding)
     stringio_.seek(0)
-    separators = re.sub('"*[a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
+    separators = re.sub('"*[?a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
     if len(separators) > 0:
         return separators[0]
     else:
@@ -64,7 +64,11 @@ def infer_encoding(uploaded_file_):
     uploaded_file_.seek(0)
     detector.close()
     encoding = detector.result['encoding']
-    return encoding
+    confidence = detector.result['confidence']
+    if confidence < 0.95:
+        return 'utf-8'
+    else:
+        return encoding
 
 
 def zipfiles(file_list, output_dir):
@@ -107,7 +111,7 @@ def create_metadata(metadata: Annotated[str, Form(media_type="multipart/form-dat
 
 @app.post("/api/cohort")
 def create_cohort(cohort: Annotated[str, Form(media_type="multipart/form-data")],
-                  files: Union[list[UploadFile], None] = None):
+                  files:  List[UploadFile] = File(None)):
     if files is None:
         files = []
     cohort_ = json.loads(cohort)
@@ -186,12 +190,13 @@ def create_variable(x, files):
 
 @app.post("/api/entities")
 def create_entities(entities: Annotated[str, Form(media_type="multipart/form-data")],
-                    files: Union[list[UploadFile], None] = None):
+                    files:  List[UploadFile] = File(None)):
     # Create Entities
     entities = json.loads(entities)
     entities_list = []
     entities_catalog = {}
     rules_output = ""
+
     for idx, entity in enumerate(entities):
         main_keys = {"name", "time_varying"}
         core_info = {k: v for k, v in entity.items() if k in main_keys}
@@ -240,7 +245,7 @@ def create_entities(entities: Annotated[str, Form(media_type="multipart/form-dat
 
 @app.post("/api/project")
 def create_project_with_files(configuration: Annotated[str, Form(media_type="multipart/form-data")],
-                              files: Union[list[UploadFile], None] = None):
+                              files:  List[UploadFile] = File(None)):
     try:
         if files is None:
             files = []

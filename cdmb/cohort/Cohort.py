@@ -81,7 +81,7 @@ class Cohort:
         if not isinstance(beggining_study_period, date):
             raise TypeError('"beggining_study_period" argument must be date')
 
-        if not isinstance(end_study_period, date):
+        if not isinstance(end_study_period, date) and end_study_period is not None:
             raise TypeError('"end_study_period" argument must be date')
 
         if cohort_definition_inclusion is not None and type(cohort_definition_inclusion) is not Crosswalks:
@@ -101,7 +101,7 @@ class Cohort:
         self._inclusion_criteria = inclusion_criteria
         self._exclusion_criteria = exclusion_criteria
         self._beggining_study_period = beggining_study_period.strftime("%Y-%m-%d")
-        self._end_study_period = end_study_period.strftime("%Y-%m-%d")
+        self._end_study_period = end_study_period.strftime("%Y-%m-%d") if end_study_period else None
         self._cohort_definition_inclusion: Crosswalks = cohort_definition_inclusion
         self._cohort_definition_exclusion: Crosswalks = cohort_definition_exclusion
 
@@ -159,14 +159,14 @@ class Cohort:
 
     @property
     def end_study_period(self) -> datetime:
-        return datetime.strptime(self._end_study_period, "%Y-%m-%d")
+        return datetime.strptime(self._end_study_period, "%Y-%m-%d") if self._end_study_period else None
 
     @end_study_period.setter
     def end_study_period(self, end_study_period: date):
         errmsg = '"end_study_period" argument must be date type'
-        if not isinstance(end_study_period, date):
+        if not isinstance(end_study_period, date) and end_study_period is not None:
             raise TypeError(errmsg)
-        self._end_study_period = end_study_period.strftime("%Y-%m-%d")
+        self._end_study_period = end_study_period.strftime("%Y-%m-%d") if end_study_period else None
 
     @property
     def cohort_definition_inclusion(self) -> Crosswalks:

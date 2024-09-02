@@ -71,7 +71,7 @@ rules_df <- data$rules %>%
 ```{r,results='asis',message=FALSE,warning=FALSE, error=FALSE}
 
 cat("::: {.panel-tabset} \n")
-for (i in range(1,length(entities_name))) {
+for (i in 1:length(entities_name)) {
   
   cat("\n")
   cat("##", entities_name[i], "\n")
@@ -81,32 +81,32 @@ for (i in range(1,length(entities_name))) {
   cat("### Null value counting \n")
 
   df1 <- as.data.frame(na_count_df[i])
+  if(nrow(df1) > 0){
   df1$na_count <- cell_spec(df1$na_count, background = ifelse(df1$na_count > 0, "orange", ""))
   cat(df1 %>% 
   kbl(., "html", escape = F, col.names = c("Variable label", "Count of null values")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
-  
+  }
   cat("\n <hr/>")
   cat("### Validation against catalogs \n")
   df2 <- as.data.frame(catalog_checking_df[i])
+  if(nrow(df2) > 0){
   df2$total_wrong_lines <- cell_spec(df2$total_wrong_lines, background = ifelse(df2$total_wrong_lines > (0.2*entities_total_registries[i]), "orange", ""))
   
   cat(df2 %>%
   kbl(., "html", escape = F, col.names = c("Variable label", "Wrong values","Fails (line number)","Number of lines")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
-  
+  }
   
   cat("\n <hr/>")
   cat("### Validation of rules\n")
   df3 <- as.data.frame(rules_df[i])
-
+  if(nrow(df3) > 0){
   df3$total_wrong_lines <- cell_spec(df3$total_wrong_lines, background = ifelse(df3$total_wrong_lines > (0.2*entities_total_registries[i]), "orange", ""))
    cat(df3 %>%
   kbl(., "html", escape = F, col.names = c("Rule", "Passes","Fails (line number)","Number of lines")) %>%  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), full_width = T))
+  
+  }
   cat("\n \n")
-
 }
   cat(":::")
 
 ```
-
-
-

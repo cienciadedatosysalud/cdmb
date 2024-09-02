@@ -7,7 +7,13 @@ from pandas.errors import ParserError
 from cdmb.entities.Rule import Rule, BetweenComparison, NullCheckingRule, ComparisonRule, InValuesRule
 from cdmb.entities.RuleSet import RuleSet
 from cdmb.entities.Variable import Variable
+from cdmb.typing.CommonDataModelTyping import DuckDBReservedWords
 
+
+def validate_string_values_restricted(string, values, arg_name):
+    if str(string).upper() in values.__args__:
+        raise ValueError('"{arg_name}" argument cannot be a reserved word. Avoid the following words: {literal_values}.'.format(arg_name=arg_name,
+                                                                                          literal_values=values.__args__))
 
 class Entity:
     def __init__(
@@ -92,6 +98,8 @@ See Also
         if len(name) > 50:
             raise ValueError('The argument "name" must be less than 50 characters.')
 
+        validate_string_values_restricted(name, DuckDBReservedWords, "name")
+
         self._uuid = str(uuid.uuid4())
         self._name: str = name
         self._time_varying: bool = time_varying
@@ -108,6 +116,14 @@ See Also
 
     @name.setter
     def name(self, name: str):
+        if ' ' in name:
+            raise ValueError('"name" argument cannot contain spaces. Replace it with "_".')
+
+        if name.strip() == "":
+            raise ValueError('"name" argument cannot be an empty string.')
+        if len(name) > 50:
+            raise ValueError('The argument "name" must be less than 50 characters.')
+        validate_string_values_restricted(name, DuckDBReservedWords, "name")
         self._name = name
 
     @property

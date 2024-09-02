@@ -2,6 +2,7 @@ from cdmb.typing.CommonDataModelTyping import CharacteristicOptions
 from cdmb.typing.CommonDataModelTyping import FormatOptions
 from cdmb.typing.CommonDataModelTyping import RequirementOptions
 from cdmb.typing.CommonDataModelTyping import TypeOptions
+from cdmb.typing.CommonDataModelTyping import DuckDBReservedWords
 from cdmb.entities.Catalog import Catalog
 
 
@@ -20,9 +21,13 @@ def _check_type(value, expected_type):
 
 def validate_string_values(string, values, arg_name):
     if string not in values.__args__:
-        raise ValueError('"{arg_name}" argument must must be in {literal_values}.'.format(arg_name=arg_name,
+        raise ValueError('"{arg_name}" argument must be in {literal_values}.'.format(arg_name=arg_name,
                                                                                           literal_values=values.__args__))
 
+def validate_string_values_restricted(string, values, arg_name):
+    if str(string).upper() in values.__args__:
+        raise ValueError('"{arg_name}" argument cannot be a reserved word. Avoid the following words: {literal_values}.'.format(arg_name=arg_name,
+                                                                                          literal_values=values.__args__))
 
 class Variable:
     def __init__(
@@ -114,6 +119,9 @@ Catalog : A class to represent a catalog of possible values and descriptions for
         if ' ' in label:
             raise ValueError('The label must be a string without spaces. Try changing the spaces to \'_\'')
 
+        validate_string_values_restricted(label, DuckDBReservedWords, "label")
+
+
         # check len
         validate_string_length(label, 50, "label", False)
         validate_string_length(description, 100, "description", False)
@@ -148,6 +156,7 @@ Catalog : A class to represent a catalog of possible values and descriptions for
     @label.setter
     def label(self, label: str):
         validate_string_length(label, 50, "label", False)
+        validate_string_values_restricted(label, DuckDBReservedWords, "label")
         self._label = label
 
     @property

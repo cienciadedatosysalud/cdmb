@@ -10,12 +10,12 @@ import re
 def infer_separator(file_, uploaded_file_):
     firstline = file_.readline().rstrip()
     logging.info(f"Header for the file '{uploaded_file_}':\n\n{firstline} \n")
-    separators = re.sub('"*[a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
+    separators = re.sub('"*[?a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
     if len(separators) > 0:
         return separators[0], firstline
     else:
         # Return random separator, exception will be thrown on header reading
-        return '|'
+        return '|', firstline
 
 
 def infer_encoding(uploaded_file_):
@@ -28,8 +28,12 @@ def infer_encoding(uploaded_file_):
         detector.close()
     encoding = detector.result['encoding']
     confidence = detector.result['confidence']
-    logging.info(f"The file '{uploaded_file_}' follows an encoding format '{encoding}' at {confidence} confidence.")
-    return encoding
+    if confidence < 0.95:
+        logging.warning(f"Confidence value is too low, 'utf-8' encoding will be applied.")
+        return 'utf-8'
+    else:
+        logging.info(f"The file '{uploaded_file_}' follows an encoding format '{encoding}' at {confidence} confidence.")
+        return encoding
 
 
 if __name__ == '__main__':

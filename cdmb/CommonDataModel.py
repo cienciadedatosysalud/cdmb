@@ -208,7 +208,18 @@ class CommonDataModel:
                 "Something went wrong when creating Entity-Relationship diagrams using Graphviz. Do you have Graphviz installed on your system?")
             logging.error(e_)
             er_created = False
-        Utils.generate_documentation(self.__getRootPath())
+
+        info_citation = {
+            "title": self.metadata.project,
+            "description": self.metadata.description,
+            "authors": self.metadata.authors,
+            "version": self.metadata.version_sem,
+            "url":self.metadata.url_project,
+            "license": self.metadata.license,
+            "keywords": self.metadata.keywords
+        }
+
+        Utils.generate_documentation(self.__getRootPath(),info_citation)
         self.__create_rog(er_created)
         self.__generate_md5()
 
@@ -410,7 +421,7 @@ class CommonDataModel:
     def __write_configuration_file(self):
         path_ = os.path.join(self.__getDocsPath(),
                              'cdmb_config.json')
-        with open(path_, 'x') as f:
+        with open(path_, 'x',encoding="utf-8") as f:
             json_object = json.dumps(self.generate_json_structure(), ensure_ascii=False, indent=4)
             f.write(json_object)
 
@@ -1044,7 +1055,7 @@ class CommonDataModel:
         def infer_separator(stringio_, encoding):
             firstline = str(stringio_.readline().rstrip(), encoding)
             stringio_.seek(0)
-            separators = re.sub('"*[a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
+            separators = re.sub('"*[?a-zA-ZÀ-ÿñÑ0-9_-]*"*', '', firstline)
             if len(separators) > 0:
                 return separators[0]
             else:
@@ -1059,7 +1070,11 @@ class CommonDataModel:
             uploaded_file_.seek(0)
             detector.close()
             encoding = detector.result['encoding']
-            return encoding
+            confidence = detector.result['confidence']
+            if confidence < 0.95:
+                return 'utf-8'
+            else:
+                return encoding
 
         def create_variable(x, _files):
             catalog = None
