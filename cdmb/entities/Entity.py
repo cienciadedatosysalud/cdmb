@@ -266,9 +266,22 @@ See Also
 
         and_or_pattern = re.compile(r'\b(AND|OR|and|or)\b')
         # Buscar coincidencias
-        and_or_ = and_or_pattern.search(exp)
+        #and_or_ = and_or_pattern.search(exp)
+        exclude_between_pattern = re.compile(r'\b[Bb][Ee][Tt][Ww][Ee][Ee][Nn]\b')
+        #between_ = exclude_between_pattern.search(exp)
 
-        if and_or_:
+        def count_and_or(s):
+            matches = and_or_pattern.findall(s)
+            return len(matches)
+
+        def count_between(s):
+            matches = exclude_between_pattern.findall(s)
+            return len(matches)
+
+        count_and_or_ = count_and_or(exp)
+        count_between_ = count_between(exp)
+
+        if (count_and_or_ > 0 and count_between_ == 0) or (count_and_or_ >= count_between_ + 1 and count_between_ >= 1):
             rule = DummyRule(exp,name,description)
             return rule
 
