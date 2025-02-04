@@ -4,7 +4,7 @@ import uuid
 import pandas as pd
 from pandas.errors import ParserError
 
-from cdmb.entities.Rule import Rule, BetweenComparison, NullCheckingRule, ComparisonRule, InValuesRule
+from cdmb.entities.Rule import Rule, BetweenComparison, NullCheckingRule, ComparisonRule, InValuesRule, DummyRule
 from cdmb.entities.RuleSet import RuleSet
 from cdmb.entities.Variable import Variable
 from cdmb.typing.CommonDataModelTyping import DuckDBReservedWords
@@ -263,6 +263,15 @@ See Also
     def create_rule_from_expression(self, exp: str, name: str = None, description: str = None) -> Rule:
         entity = self
         rule: Rule = None
+
+        and_or_pattern = re.compile(r'\b(AND|OR|and|or)\b')
+        # Buscar coincidencias
+        and_or_ = and_or_pattern.search(exp)
+
+        if and_or_:
+            rule = DummyRule(exp,name,description)
+            return rule
+
         ### regular expresion
         exp1 = re.search(
             "(\w+)\s*(=|>=|<=|<>|<|>|!=)\s*(\'\d+[\-\/]+\d+[\-\/]+\d+\s*(?:\d{2}:\d{2}:\d{2})*\'|\'[a-zA-Z_]+\'|[a-zA-Z_]+|\d*\.?\d+)",
@@ -357,7 +366,7 @@ See Also
             negative = False
             if 'NOT' in null_operator:
                 negative = True
-            NullCheckingRule(left_statement, negative)
+            rule = NullCheckingRule(left_statement, negative)
 
         # In values rule int and float
         exp4 = re.search("(\w+)\s*(IN|NOT IN|in|not in)\s\(((?:\d*\.?\d+)(?:\s*,\s*\d*\.?\d+)*)\)", exp)

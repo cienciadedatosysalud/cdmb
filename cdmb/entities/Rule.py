@@ -133,8 +133,22 @@ ComparisonOperators : An enumeration class for the possible comparison operators
             self.__min_value = right_statement if subtype_comparison in ['number', 'date',
                                                                          'datetime'] else right_statement_
         else:
-            self.__max_value = None
-            self.__min_value = None
+            if comparison_operator in ['<>','!='] and subtype_comparison in ['number', 'date','datetime']:
+                plus = datetime.timedelta(days=1) if subtype_comparison in ['date','datetime'] else 1
+                if subtype_comparison == 'date':
+                    min_value = right_statement + plus
+                elif subtype_comparison == 'datetime':
+                    min_value = right_statement + plus
+                else:
+                    min_value = right_statement_ + plus
+                self.__max_value = None
+                self.__min_value = min_value
+            elif comparison_operator in ['='] and subtype_comparison in ['number', 'date','datetime']:
+                self.__max_value = right_statement
+                self.__min_value = right_statement
+            else:
+                self.__max_value = None
+                self.__min_value = None
 
         expression = "{left_statement_} {comparison_operator_} {right_statement_}".format(
             left_statement_=left_statement.label,
@@ -257,21 +271,21 @@ Variable : A class to represent a variable in a data model.
         if isinstance(x_value, datetime.date):
             subtype_comparison = "date"
             x_value_ = x_value.strftime("%Y-%m-%d")
-            x_value_ = "'" + x_value_ + "'"
+            x_value_ = "" + x_value_ + ""
 
         elif isinstance(x_value, datetime.date):
             subtype_comparison = "datetime"
             x_value_ = x_value.strftime("%Y-%m-%d %H:%M:%S")
-            x_value_ = "'" + x_value_ + "'"
+            x_value_ = "" + x_value_ + ""
 
         y_value_ = y_value
         if isinstance(y_value, datetime.date):
             y_value_ = y_value.strftime("%Y-%m-%d")
-            y_value_ = "'"+y_value_+"'"
+            y_value_ = ""+y_value_+""
 
         elif isinstance(y_value, datetime.date):
             y_value_ = y_value.strftime("%Y-%m-%d %H:%M:%S")
-            y_value_ = "'" + y_value_ + "'"
+            y_value_ = "" + y_value_ + ""
 
         if negative is False:
             expression = "{variable_} BETWEEN {x_value_} AND {y_value_}".format(
