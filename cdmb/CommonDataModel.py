@@ -597,9 +597,15 @@ class CommonDataModel:
                                         data_[label] = [fake.pyint(max_value=rule['max_value']) for _ in
                                                         range(num_registries)]
                                 elif format_ == "Double":
-                                    data_[label] = [
-                                        fake.pyfloat(left_digits=5, right_digits=2, min_value=rule['min_value'],
-                                                     max_value=rule['max_value']) for _
+                                    if rule['max_value'] is not None and rule['min_value'] is not None:
+                                        data_[label] = [
+                                            fake.pyfloat(left_digits=5, right_digits=2, min_value=rule['min_value'],
+                                                         max_value=rule['max_value']+0.01) for _
+                                            in range(num_registries)]
+                                    else:
+                                        data_[label] = [
+                                            fake.pyfloat(left_digits=5, right_digits=2, min_value=rule['min_value'],
+                                                         max_value=rule['max_value']) for _
                                         in range(num_registries)]
                         df = pd.concat([df, pd.DataFrame(data_)], axis=1)
                     else:
