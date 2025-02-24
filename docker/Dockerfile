@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.12.8-slim
 RUN apt update && apt install -y --no-install-recommends \
   && apt install -y graphviz \
   && rm -rf /var/lib/apt/lists/*
