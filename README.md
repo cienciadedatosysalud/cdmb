@@ -1,4 +1,29 @@
 ![Logo of the project](https://cienciadedatosysalud.org/wp-content/uploads/logo-Data-Science-VPM.png)
+
+# ⚠️ DEPRECATED / ARCHIVED PROJECT
+
+This repository (**Common Data Model Builder - cdmb**) is no longer maintained and has been officially deprecated.
+
+The tool has been replaced by a new, improved version with a more robust architecture:
+
+👉 **Check out the new version here:** **[https://github.com/cienciadedatosysalud/cdmb-web](https://github.com/cienciadedatosysalud/cdmb-web)**
+
+*Note: This repository is kept for historical purposes only.*
+
+---
+# ⚠️ PROYECTO DESCONTINUADO / ARCHIVADO
+
+Este repositorio (**Common Data Model Builder - cdmb**) ha sido descontinuado y ya no recibe actualizaciones ni soporte. 
+
+La herramienta ha evolucionado y ha sido reemplazada por una nueva versión mejorada con una arquitectura más robusta:
+
+👉 **Accede a la nueva versión aquí:** **[https://github.com/cienciadedatosysalud/cdmb-web](https://github.com/cienciadedatosysalud/cdmb-web)**
+
+*Nota: Este repositorio se mantiene únicamente con fines históricos.*
+
+---
+
+
 - [Common Data Model Builder (cdmb)](#common-data-model-builder-cdmb)
 - [User Interface](#user-interface)
 - [Outputs](#outputs)
